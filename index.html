@@ -7,108 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700&display=swap">
+<link rel="stylesheet" href="styles.css">
 <style>
-:root{
-  --bg:#f3f6f5;
-  --surface:#ffffff;
-  --surface-2:#eaf1ef;
-  --fg:#1d2a28;
-  --muted:#5a6a67;
-  --line:#d5dfdc;
-  --line-strong:#b7c6c2;
-  --accent:#0d7a6a;
-  --accent-hover:#0a6658;
-  --accent-fg:#ffffff;
-  --accent-soft:#d9efe9;
-  --sun:#f2b632;
-  --sun-soft:#fdf1d2;
-  --danger:#cf3a44;
-  --danger-fg:#ffffff;
-  --stage:#e4ece9;
-  --stage-dot:#cfdad6;
-  --focus:#e08600;
-  --shadow:0 1px 2px rgba(20,40,36,.06),0 6px 20px rgba(20,40,36,.07);
-  --backdrop:rgba(15,28,25,.45);
-  --font-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
-  color-scheme:light;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#111716;
-    --surface:#1a2220;
-    --surface-2:#222d2a;
-    --fg:#e5eeeb;
-    --muted:#9db0ab;
-    --line:#2f3d3a;
-    --line-strong:#466460;
-    --accent:#45c3a9;
-    --accent-hover:#62d2bb;
-    --accent-fg:#0a1d19;
-    --accent-soft:#1c3832;
-    --sun:#f5c451;
-    --sun-soft:#3a3020;
-    --danger:#ff6b74;
-    --danger-fg:#1e0a0c;
-    --stage:#0c1110;
-    --stage-dot:#202b28;
-    --focus:#ffb547;
-    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
-    --backdrop:rgba(0,0,0,.6);
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#111716;
-  --surface:#1a2220;
-  --surface-2:#222d2a;
-  --fg:#e5eeeb;
-  --muted:#9db0ab;
-  --line:#2f3d3a;
-  --line-strong:#466460;
-  --accent:#45c3a9;
-  --accent-hover:#62d2bb;
-  --accent-fg:#0a1d19;
-  --accent-soft:#1c3832;
-  --sun:#f5c451;
-  --sun-soft:#3a3020;
-  --danger:#ff6b74;
-  --danger-fg:#1e0a0c;
-  --stage:#0c1110;
-  --stage-dot:#202b28;
-  --focus:#ffb547;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
-  --backdrop:rgba(0,0,0,.6);
-  color-scheme:dark;
-}
-*,*::before,*::after{box-sizing:border-box}
-html,body{margin:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.6;-webkit-text-size-adjust:100%;overflow-x:hidden}
-[hidden]{display:none!important}
-button,input{font:inherit;color:inherit}
-button{cursor:pointer}
-:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-
-.app{max-width:1180px;margin:0 auto;padding-top:10px;padding-bottom:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.demo-note{margin:0 0 8px;text-align:center;font-size:12px;color:var(--muted);letter-spacing:.04em}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-.brand{display:flex;align-items:center;gap:10px;min-width:0}
-.brand-mark{flex:none;width:34px;height:34px;border-radius:10px;background:var(--accent);color:var(--accent-fg);display:grid;place-items:center}
-.brand h1{margin:0;font-size:18px;font-weight:900;letter-spacing:.02em;line-height:1.25}
-.brand p{margin:0;font-size:12px;color:var(--muted)}
-
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 18px;border-radius:12px;border:1.5px solid transparent;font-weight:700;font-size:15px;transition:background-color .15s,border-color .15s,transform .1s}
-.btn:active{transform:translateY(1px)}
-.btn-primary{background:var(--accent);color:var(--accent-fg)}
-.btn-primary:hover{background:var(--accent-hover)}
-.btn-secondary{background:var(--surface);border-color:var(--line-strong);color:var(--fg)}
-.btn-secondary:hover{background:var(--surface-2)}
-.btn-ghost{background:transparent;color:var(--muted);border-color:transparent;min-height:40px;padding:0 12px;font-weight:500}
-.btn-ghost:hover{background:var(--surface-2);color:var(--fg)}
-.btn-danger{background:var(--danger);color:var(--danger-fg)}
-.btn-danger:hover{filter:brightness(1.06)}
-.btn-small{min-height:36px;padding:0 12px;font-size:14px;border-radius:10px}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-
 /* ---------- designer layout ---------- */
 .designer{display:flex;flex-direction:column;gap:12px}
 .stage{position:sticky;top:0;z-index:5;background:var(--stage);background-image:radial-gradient(var(--stage-dot) 1.2px,transparent 1.3px);background-size:14px 14px;border-radius:18px;padding:10px 12px 12px;box-shadow:var(--shadow)}
@@ -201,19 +101,6 @@ fieldset.editor:disabled .field,fieldset.editor:disabled .seg,fieldset.editor:di
 .btn-text-danger:hover{background:var(--surface-2);border-color:var(--danger)}
 .tips{margin:0;padding-left:1.2em;font-size:13px;color:var(--muted)}
 
-/* dialogs */
-dialog{border:0;padding:0;border-radius:20px;background:var(--surface);color:var(--fg);box-shadow:var(--shadow);width:min(520px,calc(100% - 32px));max-height:calc(100% - 32px)}
-dialog::backdrop{background:var(--backdrop)}
-.dlg{padding:20px;display:flex;flex-direction:column;gap:14px}
-.dlg h2{margin:0;font-size:18px;font-weight:900}
-.dlg p{margin:0}
-.dlg-stamp{background:var(--stage);border-radius:14px;padding:14px}
-.dlg-stamp svg{display:block;width:100%;height:auto}
-.summary{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px}
-.summary dt{color:var(--muted)}
-.summary dd{margin:0;font-weight:700;overflow-wrap:anywhere}
-.dlg-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
-.dlg-actions .btn{flex:1 1 140px}
 
 /* done */
 .done{max-width:620px;margin:16px auto 0;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;box-shadow:var(--shadow)}
@@ -221,6 +108,9 @@ dialog::backdrop{background:var(--backdrop)}
 .done h2{margin:0;font-size:22px;font-weight:900}
 .done p{margin:0;color:var(--muted)}
 .done .dlg-stamp{width:100%}
+.done .done-order{color:var(--fg);font-size:15px}
+.done-order b{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.done-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 
 @media (min-width:900px){
   .app{padding-top:16px}
@@ -233,12 +123,6 @@ dialog::backdrop{background:var(--backdrop)}
   .tab{flex-direction:row;justify-content:center;gap:6px;padding:10px 6px;font-size:14px}
   .shell-figure svg{width:150px}
 }
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
-}
-.site-foot{margin:20px 0 0;text-align:center;font-size:12px;color:var(--muted)}
-.site-foot a{color:var(--accent);font-weight:700;text-decoration:none}
-.site-foot a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -407,7 +291,11 @@ dialog::backdrop{background:var(--backdrop)}
     <div class="dlg-stamp"><svg id="done-stamp" viewBox="-6 -6 392 152" role="img" aria-label="最終印面"></svg></div>
     <p>這就是店家收到的印面</p>
     <p id="done-summary" style="font-size:13px"></p>
-    <button type="button" class="btn btn-primary" id="btn-again">再設計一個</button>
+    <p class="done-order" id="done-order" hidden>訂單編號：<b id="done-order-id"></b></p>
+    <div class="done-actions">
+      <button type="button" class="btn btn-primary" id="btn-again">再設計一個</button>
+      <a class="btn btn-secondary" id="btn-admin" href="admin.html">看接收端流程</a>
+    </div>
   </section>
 
   <footer class="site-foot">由 <a href="https://zedotech.com" target="_blank" rel="noopener">zedotech.com</a> 製作</footer>
@@ -437,145 +325,16 @@ dialog::backdrop{background:var(--backdrop)}
   </div>
 </dialog>
 
+<script src="stamp-core.js"></script>
 <script>
 (function(){
   'use strict';
-  var NS = 'http://www.w3.org/2000/svg';
-  var W = 380, H = 140;        // 10 單位 = 1 mm
+  var Core = window.StampCore;
+  var W = Core.W, H = Core.H;        // 10 單位 = 1 mm
   var MAX_TEXT = 3, MAX_ICON = 3;
-  var PAPER = '#ffffff';
-
-  var SHELLS = {
-    pink:   {name:'粉紅',   base:'#f4a9be', dark:'#d97b98', light:'#fde4eb'},
-    blue:   {name:'天空藍', base:'#8cc6ee', dark:'#5a9fd2', light:'#e1f1fc'},
-    yellow: {name:'檸檬黃', base:'#f7d465', dark:'#ddb033', light:'#fdf3cc'}
-  };
-  var INKS = {
-    black: {name:'黑色', color:'#1c1c1e'},
-    red:   {name:'紅色', color:'#c8102e'},
-    blue:  {name:'藍色', color:'#1d4ea3'}
-  };
-  var FONTS = {
-    sans:  {name:'黑體', family:"'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif", css:'700 40px "Noto Sans TC"'},
-    serif: {name:'明體', family:"'Noto Serif TC','PMingLiU','Songti TC',serif", css:'700 40px "Noto Serif TC"'},
-    kai:   {name:'楷體', family:"'LXGW WenKai TC','DFKai-SB','BiauKai','Kaiti TC',serif", css:'700 40px "LXGW WenKai TC"'}
-  };
-
-  function starPts(cx, cy, R, r){
-    var p = [];
-    for (var i = 0; i < 10; i++){
-      var a = -Math.PI/2 + i*Math.PI/5, rr = i % 2 ? r : R;
-      p.push((cx + rr*Math.cos(a)).toFixed(1) + ',' + (cy + rr*Math.sin(a)).toFixed(1));
-    }
-    return p.join(' ');
-  }
-
-  /* ---------- 邊框（原創線條圖） ---------- */
-  var BORDERS = [
-    {id:'train', name:'小火車', safe:{x:142,y:14,w:224,h:92}, svg:function(){
-      var s = '<line x1="10" y1="118" x2="370" y2="118"/>';
-      for (var x = 20; x <= 362; x += 24) s += '<line x1="'+x+'" y1="118" x2="'+x+'" y2="128" stroke-width="4"/>';
-      s += '<path d="M10 40h42" stroke-width="6"/>'+
-           '<rect x="16" y="40" width="30" height="58" rx="5"/>'+
-           '<rect x="22" y="48" width="18" height="15" rx="3" stroke-width="4"/>'+
-           '<rect x="46" y="62" width="40" height="36" rx="8"/>'+
-           '<path d="M64 62V48h12v14"/>'+
-           '<circle cx="86" cy="34" r="5" stroke-width="4"/><circle cx="100" cy="22" r="7" stroke-width="4"/>'+
-           '<circle cx="30" cy="104" r="9" fill="'+PAPER+'"/><circle cx="54" cy="104" r="9" fill="'+PAPER+'"/><circle cx="76" cy="104" r="9" fill="'+PAPER+'"/>'+
-           '<line x1="86" y1="90" x2="96" y2="90"/>'+
-           '<rect x="96" y="68" width="34" height="30" rx="5"/>'+
-           '<circle cx="105" cy="105" r="7" fill="'+PAPER+'"/><circle cx="122" cy="105" r="7" fill="'+PAPER+'"/>';
-      return s;
-    }},
-    {id:'rounded', name:'圓角框', safe:{x:30,y:22,w:320,h:96}, svg:function(){
-      return '<rect x="9" y="9" width="362" height="122" rx="24" stroke-width="6"/>';
-    }},
-    {id:'double', name:'雙線框', safe:{x:36,y:30,w:308,h:80}, svg:function(){
-      return '<rect x="7" y="7" width="366" height="126" rx="12" stroke-width="5"/>'+
-             '<rect x="19" y="19" width="342" height="102" rx="5" stroke-width="3"/>';
-    }},
-    {id:'stars', name:'星星虛線', safe:{x:36,y:26,w:308,h:88}, svg:function(){
-      var s = '<rect x="16" y="16" width="348" height="108" rx="18" stroke-dasharray="15 11"/>';
-      [[16,16],[364,16],[16,124],[364,124]].forEach(function(c){
-        s += '<circle cx="'+c[0]+'" cy="'+c[1]+'" r="15" fill="'+PAPER+'" stroke="none"/>'+
-             '<polygon points="'+starPts(c[0],c[1],14,6)+'" fill="currentColor" stroke="none"/>';
-      });
-      return s;
-    }},
-    {id:'wave', name:'波浪底線', safe:{x:24,y:12,w:332,h:92}, svg:function(){
-      var d = 'M22 118q12 -14 24 0';
-      for (var i = 0; i < 13; i++) d += 't24 0';
-      return '<path d="'+d+'" stroke-width="6"/>'+
-             '<circle cx="22" cy="118" r="5" fill="currentColor" stroke="none"/><circle cx="358" cy="118" r="5" fill="currentColor" stroke="none"/>';
-    }},
-    {id:'robot', name:'機器人', safe:{x:108,y:26,w:246,h:88}, svg:function(){
-      return '<rect x="94" y="12" width="274" height="116" rx="14"/>'+
-             '<line x1="46" y1="34" x2="46" y2="22"/><circle cx="46" cy="16" r="6" fill="currentColor" stroke="none"/>'+
-             '<rect x="16" y="34" width="60" height="56" rx="12"/>'+
-             '<circle cx="34" cy="57" r="6" fill="currentColor" stroke="none"/><circle cx="58" cy="57" r="6" fill="currentColor" stroke="none"/>'+
-             '<rect x="32" y="71" width="28" height="10" rx="3" stroke-width="4"/>'+
-             '<path d="M41 71v10M51 71v10" stroke-width="3"/>'+
-             '<path d="M16 53h-6v18h6M76 53h6v18h-6" stroke-width="4"/>'+
-             '<path d="M38 90v8M54 90v8" stroke-width="4"/>'+
-             '<rect x="26" y="98" width="40" height="26" rx="6"/>'+
-             '<circle cx="40" cy="111" r="3.5" fill="currentColor" stroke="none"/><circle cx="52" cy="111" r="3.5" fill="currentColor" stroke="none"/>'+
-             '<path d="M66 108h28"/>';
-    }},
-    {id:'cat', name:'小貓', safe:{x:104,y:14,w:258,h:88}, svg:function(){
-      return '<path d="M20 62L22 28L42 46Q51 42 60 46L80 28L82 62Q85 96 51 98Q17 96 20 62Z"/>'+
-             '<ellipse cx="40" cy="66" rx="4.5" ry="6.5" fill="currentColor" stroke="none"/>'+
-             '<ellipse cx="62" cy="66" rx="4.5" ry="6.5" fill="currentColor" stroke="none"/>'+
-             '<path d="M47 76h8l-4 5z" fill="currentColor" stroke-width="2"/>'+
-             '<path d="M51 81q-4 6 -9 3M51 81q4 6 9 3" stroke-width="3"/>'+
-             '<path d="M8 72l16 2M8 84l16 -3M94 72l-16 2M94 84l-16 -3" stroke-width="3"/>'+
-             '<path d="M40 98Q48 116 70 116H352" stroke-width="6"/>'+
-             '<path d="M352 116q14 0 14 -14q0 -10 8 -12" stroke-width="5"/>';
-    }},
-    {id:'rocket', name:'火箭', safe:{x:22,y:12,w:262,h:80}, svg:function(){
-      return '<path d="M14 116C90 134 170 122 228 98S280 78 288 72" stroke-dasharray="1 13" stroke-width="7"/>'+
-             '<path d="M298 58h36q26 0 36 12q-10 12 -36 12h-36z"/>'+
-             '<circle cx="338" cy="70" r="6" stroke-width="4"/>'+
-             '<path d="M306 58l-12 -16h16l12 16M306 82l-12 16h16l12 -16" stroke-width="4"/>'+
-             '<path d="M298 62l-14 8l14 8" stroke-width="4"/>'+
-             '<polygon points="'+starPts(314,22,10,4)+'" fill="currentColor" stroke="none"/>'+
-             '<polygon points="'+starPts(254,128,7,3)+'" fill="currentColor" stroke="none"/>';
-    }},
-    {id:'cloud', name:'雲朵', safe:{x:72,y:46,w:236,h:72}, svg:function(){
-      var shapes = '<rect x="34" y="62" width="312" height="62" rx="31"/>'+
-                   '<circle cx="92" cy="68" r="30"/><circle cx="158" cy="52" r="36"/>'+
-                   '<circle cx="228" cy="54" r="34"/><circle cx="294" cy="70" r="30"/>';
-      return '<g fill="currentColor" stroke="currentColor" stroke-width="12">'+shapes+'</g>'+
-             '<g fill="'+PAPER+'" stroke="none">'+shapes+'</g>';
-    }},
-    {id:'none', name:'無邊框', safe:{x:20,y:14,w:340,h:112}, svg:function(){ return ''; }}
-  ];
-
-  /* ---------- 小圖案（以 0,0 為中心，約 40×40) ---------- */
-  var ICONS = [
-    {id:'star',   name:'星星', svg:'<polygon points="'+starPts(0,1,20,8.5)+'"/>'},
-    {id:'heart',  name:'愛心', svg:'<path d="M0 17C-24 2 -21 -17 -9.5 -17C-4.5 -17 -1 -13.5 0 -9C1 -13.5 4.5 -17 9.5 -17C21 -17 24 2 0 17Z"/>'},
-    {id:'sun',    name:'太陽', svg:'<circle r="8.5"/><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">'+
-        (function(){ var s=''; for (var i=0;i<8;i++){ var a=i*Math.PI/4, c=Math.cos(a), n=Math.sin(a);
-          s += '<line x1="'+(c*13).toFixed(1)+'" y1="'+(n*13).toFixed(1)+'" x2="'+(c*19).toFixed(1)+'" y2="'+(n*19).toFixed(1)+'"/>'; } return s; })()+'</g>'},
-    {id:'flower', name:'小花', svg:(function(){ var s=''; for (var i=0;i<5;i++){ var a=-Math.PI/2+i*2*Math.PI/5;
-          s += '<circle cx="'+(Math.cos(a)*10.5).toFixed(1)+'" cy="'+(Math.sin(a)*10.5).toFixed(1)+'" r="8"/>'; }
-          return s + '<circle r="5" fill="'+PAPER+'"/><circle r="2.2"/>'; })()},
-    {id:'note',   name:'音符', svg:'<ellipse cx="-9" cy="12" rx="6.5" ry="5" transform="rotate(-20 -9 12)"/><ellipse cx="11" cy="8" rx="6.5" ry="5" transform="rotate(-20 11 8)"/>'+
-        '<path d="M-3 11V-12L17 -17V7" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/><path d="M-3 -12L17 -17V-10L-3 -5Z"/>'},
-    {id:'crown',  name:'皇冠', svg:'<path d="M-19 10L-21 -12L-9 -1L0 -17L9 -1L21 -12L19 10Z"/><rect x="-19" y="13" width="38" height="5.5" rx="2"/>'},
-    {id:'bolt',   name:'閃電', svg:'<path d="M5 -20L-13 4H-1L-6 20L13 -5H1Z"/>'},
-    {id:'smile',  name:'笑臉', svg:'<circle r="17" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="-6.5" cy="-5" r="3"/><circle cx="6.5" cy="-5" r="3"/>'+
-        '<path d="M-9 4Q0 13 9 4" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>'},
-    {id:'paw',    name:'腳印', svg:'<ellipse cx="0" cy="8" rx="11" ry="9.5"/><ellipse cx="-13" cy="-6" rx="4.5" ry="6"/><ellipse cx="-5" cy="-15" rx="4.5" ry="6"/>'+
-        '<ellipse cx="5" cy="-15" rx="4.5" ry="6"/><ellipse cx="13" cy="-6" rx="4.5" ry="6"/>'},
-    {id:'moon',   name:'月亮', svg:'<path d="M6 -18A18 18 0 1 0 18 8A14 14 0 1 1 6 -18Z"/>'},
-    {id:'fish',   name:'小魚', svg:'<path d="M-10 0C-2 -12 12 -12 18 0C12 12 -2 12 -10 0Z"/><path d="M-10 0L-20 -9V9Z"/><circle cx="9" cy="-2" r="2.4" fill="'+PAPER+'"/>'},
-    {id:'leaf',   name:'葉子', svg:'<path d="M-16 16C-18 -6 0 -18 18 -18C18 2 6 18 -16 16Z"/><path d="M-12 12L8 -8" fill="none" stroke="'+PAPER+'" stroke-width="2.6" stroke-linecap="round"/>'}
-  ];
-
-  function byId(list, id){ for (var i=0;i<list.length;i++) if (list[i].id === id) return list[i]; return list[0]; }
-  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-  function f1(n){ return Math.round(n*10)/10; }
+  var PAPER = Core.PAPER;
+  var SHELLS = Core.SHELLS, INKS = Core.INKS, FONTS = Core.FONTS, BORDERS = Core.BORDERS, ICONS = Core.ICONS;
+  var byId = Core.byId, esc = Core.esc, f1 = Core.f1;
   function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
   function $(id){ return document.getElementById(id); }
 
@@ -598,23 +357,7 @@ dialog::backdrop{background:var(--backdrop)}
   /* ---------- 印面繪製 ---------- */
   var stamp = $('stamp');
 
-  function itemMarkup(it, ink, interactive){
-    var attrs = interactive ? ' class="item" data-role="item" data-id="'+it.id+'"' : '';
-    if (it.type === 'text'){
-      return '<text'+attrs+' x="'+f1(it.x)+'" y="'+f1(it.y)+'" font-size="'+f1(it.size)+'" text-anchor="middle" dominant-baseline="central" fill="'+ink+
-             '" font-weight="700" style="font-family:'+FONTS[it.font].family+'">'+esc(it.text)+'</text>';
-    }
-    var icon = byId(ICONS, it.icon), k = it.size/40;
-    return '<g'+attrs+' transform="translate('+f1(it.x)+' '+f1(it.y)+') scale('+k.toFixed(3)+')" color="'+ink+'" fill="currentColor" stroke="none">'+
-           (interactive ? '<circle class="hit" r="22"/>' : '') + icon.svg + '</g>';
-  }
-  function stampMarkup(interactive){
-    var ink = INKS[state.ink].color, b = byId(BORDERS, state.border);
-    var s = '<rect x="0" y="0" width="'+W+'" height="'+H+'" rx="6" fill="'+PAPER+'" stroke="#cdd5d3" stroke-width="1.5"/>';
-    s += '<g color="'+ink+'" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none">'+b.svg()+'</g>';
-    state.items.forEach(function(it){ s += itemMarkup(it, ink, interactive); });
-    return s;
-  }
+  function stampMarkup(interactive){ return Core.stampMarkup(state, interactive); }
   function itemBox(it){
     if (it.type === 'icon'){ var h = it.size/2; return {x:it.x-h, y:it.y-h, w:it.size, h:it.size}; }
     var node = stamp.querySelector('[data-id="'+it.id+'"]');
@@ -903,6 +646,11 @@ dialog::backdrop{background:var(--backdrop)}
   $('confirm-ok').addEventListener('click', function(){
     $('done-stamp').innerHTML = stampMarkup(false);
     $('done-summary').textContent = summaryRows().slice(0, 4).map(function(r){ return r[0] + '：' + r[1]; }).join(' · ');
+    var order = null;
+    try { order = Core.createOrder({shell:state.shell, ink:state.ink, border:state.border, items:state.items}); } catch(err){}
+    $('done-order').hidden = !order;
+    $('done-order-id').textContent = order ? order.id : '';
+    $('btn-admin').setAttribute('href', order ? 'admin.html#' + order.id : 'admin.html');
     closeDialog(confirmDlg);
     $('designer-view').hidden = true;
     $('btn-reset').hidden = true;

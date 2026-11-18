@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>訂單後台（示範）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700&display=swap">
+<link rel="stylesheet" href="styles.css">
+<style>
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.topbar{flex-wrap:wrap}
+.flow{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-wrap:wrap;gap:6px 8px;font-size:13px;color:var(--muted)}
+.flow li{display:flex;align-items:center;gap:6px}
+.flow li+li::before{content:"";width:14px;height:1.5px;background:var(--line-strong);margin-right:2px}
+.flow b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:12px}
+
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.filter{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-size:14px;font-weight:500}
+.filter:hover{border-color:var(--line-strong);background:var(--surface-2)}
+.filter[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+.filter .count{min-width:22px;padding:0 6px;border-radius:999px;background:var(--surface-2);color:var(--muted);font-size:12px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.filter[aria-pressed="true"] .count{background:var(--accent);color:var(--accent-fg)}
+.btn-clear{color:var(--danger)}
+.btn-clear:hover{color:var(--danger)}
+
+.admin-grid{display:flex;flex-direction:column;gap:14px}
+.list-pane,.detail-pane{min-width:0}
+.order-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.order-row{width:100%;display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:center;padding:10px 12px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);text-align:left;transition:border-color .15s,background-color .15s,box-shadow .3s}
+.order-row:hover{border-color:var(--line-strong);background:var(--surface-2)}
+.order-row[aria-current="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.order-row.is-just{box-shadow:0 0 0 3px var(--sun)}
+.thumb{display:block;width:100%;height:auto;border-radius:6px}
+.row-main{min-width:0;display:flex;flex-direction:column;gap:2px}
+.row-top{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.row-id{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.row-time{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.row-sum{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.row-sum b{color:var(--fg);font-weight:700}
+.chip{display:inline-flex;align-items:center;padding:0 7px;border-radius:6px;border:1px dashed var(--line-strong);font-size:11px;font-weight:700;color:var(--muted);line-height:18px}
+.just{display:inline-flex;align-items:center;padding:0 8px;border-radius:6px;background:var(--sun);color:#2a2000;font-size:12px;font-weight:700;line-height:20px}
+
+.tag{display:inline-flex;align-items:center;gap:5px;padding:1px 9px 1px 7px;border-radius:999px;border:1.5px solid;font-size:12px;font-weight:700;line-height:18px;white-space:nowrap;color:var(--fg)}
+.tag svg{flex:none}
+.tag-pending{background:var(--sun-soft);border-color:var(--sun)}
+.tag-making{background:var(--info-soft);border-color:var(--info)}
+.tag-shipped{background:var(--accent-soft);border-color:var(--accent)}
+.empty{margin:0;padding:28px 16px;border:1.5px dashed var(--line-strong);border-radius:14px;text-align:center;color:var(--muted);font-size:14px}
+
+.detail-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:16px}
+.detail-placeholder{margin:0;padding:40px 16px;text-align:center;color:var(--muted);font-size:14px}
+.detail-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.detail-head h2{margin:0;font-size:19px;font-weight:900;font-variant-numeric:tabular-nums;outline:none}
+.detail-card h3{margin:0 0 8px;font-size:14px;font-weight:700;color:var(--muted)}
+.detail-preview .dlg-stamp{padding:12px}
+.preview-cap{margin:6px 0 0;font-size:12px;color:var(--muted);text-align:center}
+.spec{margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);border-top:1px solid var(--line);font-size:14px}
+.spec dt,.spec dd{margin:0;padding:8px 0;border-bottom:1px solid var(--line)}
+.spec dt{color:var(--muted);padding-right:16px}
+.spec dd{font-weight:700;overflow-wrap:anywhere}
+.spec .sw{display:inline-block;width:12px;height:12px;border-radius:50%;border:1px solid var(--line-strong);margin-right:6px;vertical-align:-1px}
+.spec .sub{display:block;font-weight:500;color:var(--muted);font-size:13px}
+.spec ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px}
+.status-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.status-seg button{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-size:14px;font-weight:700}
+.status-seg button:hover{border-color:var(--line-strong);background:var(--surface-2)}
+.status-seg button[aria-pressed="true"][data-status="待製作"]{border-color:var(--sun);background:var(--sun-soft)}
+.status-seg button[aria-pressed="true"][data-status="製作中"]{border-color:var(--info);background:var(--info-soft)}
+.status-seg button[aria-pressed="true"][data-status="已出貨"]{border-color:var(--accent);background:var(--accent-soft)}
+.status-seg button .ck{visibility:hidden}
+.status-seg button[aria-pressed="true"] .ck{visibility:visible}
+.status-note{margin:6px 0 0;min-height:1.4em;font-size:13px;color:var(--muted)}
+.downloads{display:flex;flex-wrap:wrap;gap:8px}
+.downloads .btn{flex:1 1 220px}
+.notes{margin:10px 0 0;padding-left:1.2em;font-size:13px;color:var(--muted)}
+.notes li+li{margin-top:2px}
+.msg{margin:10px 0 0;font-size:13px;border-radius:10px}
+.msg:empty{display:none}
+.msg:not(:empty){padding:8px 12px;background:var(--sun-soft);color:var(--fg);border:1px solid var(--sun)}
+.btn-back{align-self:flex-start;margin:-6px 0 -6px -8px}
+.page-note{margin:0 0 10px;font-size:13px;color:var(--muted);min-height:0}
+.page-note:empty{display:none}
+
+@media (max-width:899.98px){
+  .admin-grid.show-detail .list-pane{display:none}
+  .admin-grid:not(.show-detail) .detail-pane{display:none}
+}
+@media (min-width:900px){
+  .app{padding-top:16px}
+  .brand h1{font-size:21px}
+  .admin-grid{display:grid;grid-template-columns:minmax(380px,5fr) minmax(0,6fr);gap:16px;align-items:start}
+  .detail-pane{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;border-radius:18px}
+  .btn-back{display:none}
+  .order-row{grid-template-columns:120px minmax(0,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <p class="demo-note">示範版 · 資料只存在這台裝置的瀏覽器，不是真的訂單系統</p>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M7.5 9h9M7.5 13h9M7.5 17h5"/></svg>
+      </span>
+      <div>
+        <h1>訂單後台（示範）</h1>
+        <p>客人送出的印章設計，店家會在這裡看到</p>
+      </div>
+    </div>
+    <a class="btn btn-secondary btn-small" id="link-designer" href="index.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      回到設計器
+    </a>
+  </header>
+
+  <ol class="flow" aria-label="接收端流程">
+    <li><b>1</b>客人在設計器送出</li>
+    <li><b>2</b>店家在這裡看到訂單與規格</li>
+    <li><b>3</b>下載黑白圖檔去製作</li>
+    <li><b>4</b>更新狀態</li>
+  </ol>
+
+  <div class="toolbar">
+    <div class="filters" role="group" aria-label="依狀態篩選訂單" id="filters">
+      <button type="button" class="filter" id="filter-all" data-filter="all" aria-pressed="true">全部 <span class="count" id="count-all">0</span></button>
+      <button type="button" class="filter" id="filter-pending" data-filter="待製作" aria-pressed="false">待製作 <span class="count" id="count-pending">0</span></button>
+      <button type="button" class="filter" id="filter-making" data-filter="製作中" aria-pressed="false">製作中 <span class="count" id="count-making">0</span></button>
+      <button type="button" class="filter" id="filter-shipped" data-filter="已出貨" aria-pressed="false">已出貨 <span class="count" id="count-shipped">0</span></button>
+    </div>
+    <button type="button" class="btn btn-ghost btn-small btn-clear" id="btn-clear">清除示範資料</button>
+  </div>
+  <p class="page-note" id="page-note" role="status" aria-live="polite"></p>
+
+  <main class="admin-grid" id="admin-grid">
+    <section class="list-pane" aria-labelledby="list-title">
+      <h2 class="sr-only" id="list-title">訂單列表</h2>
+      <ul class="order-list" id="order-list"></ul>
+      <p class="empty" id="empty-msg" hidden></p>
+    </section>
+
+    <section class="detail-pane" id="detail-pane" aria-label="訂單明細">
+      <div class="detail-card">
+        <p class="detail-placeholder" id="detail-empty">點一筆訂單，就能在這裡看到印面、規格和製作用圖檔。</p>
+        <div id="detail-body" hidden style="display:flex;flex-direction:column;gap:16px">
+          <button type="button" class="btn btn-ghost btn-small btn-back" id="btn-back">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+            回到列表
+          </button>
+          <div class="detail-head">
+            <h2 id="detail-title" tabindex="-1"></h2>
+            <span id="detail-tag"></span>
+            <span class="chip" id="detail-sample" hidden>範例</span>
+            <span class="just" id="detail-just" hidden>剛剛送出的訂單</span>
+          </div>
+          <div class="detail-preview">
+            <div class="dlg-stamp"><svg id="detail-stamp" viewBox="-6 -6 392 152" role="img" aria-label="客人看到的印面"></svg></div>
+            <p class="preview-cap" id="detail-cap"></p>
+          </div>
+          <div>
+            <h3>規格</h3>
+            <dl class="spec" id="detail-spec"></dl>
+          </div>
+          <div>
+            <h3 id="status-label">訂單狀態</h3>
+            <div class="status-seg" role="group" aria-labelledby="status-label">
+              <button type="button" id="status-pending" data-status="待製作" aria-pressed="false"><svg class="ck" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>待製作</button>
+              <button type="button" id="status-making" data-status="製作中" aria-pressed="false"><svg class="ck" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>製作中</button>
+              <button type="button" id="status-shipped" data-status="已出貨" aria-pressed="false"><svg class="ck" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>已出貨</button>
+            </div>
+            <p class="status-note" id="status-note" role="status" aria-live="polite"></p>
+          </div>
+          <div>
+            <h3>製作用檔案</h3>
+            <div class="downloads">
+              <button type="button" class="btn btn-primary" id="dl-png">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg>
+                <span id="dl-png-label">下載製作用圖檔（PNG）</span>
+              </button>
+              <button type="button" class="btn btn-secondary" id="dl-svg">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg>
+                下載向量檔（SVG）
+              </button>
+            </div>
+            <ul class="notes">
+              <li>製作用圖檔一律輸出黑白，印油顏色請看規格表。</li>
+              <li>PNG 為 3800 × 1400 px（38 × 14 mm，每公釐 100 px）。</li>
+              <li>向量檔的文字需要電腦安裝對應字體才會正確顯示。</li>
+            </ul>
+            <p class="msg" id="dl-msg" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">由 <a href="https://zedotech.com" target="_blank" rel="noopener">zedotech.com</a> 製作</footer>
+</div>
+
+<dialog id="clear-dialog" aria-labelledby="clear-title">
+  <div class="dlg">
+    <h2 id="clear-title">要清除示範資料嗎？</h2>
+    <p>這台裝置上從設計器送出的訂單都會刪除，範例訂單的狀態也會回到一開始的樣子。清除後無法復原。</p>
+    <div class="dlg-actions">
+      <button type="button" class="btn btn-secondary" id="clear-cancel">先不要</button>
+      <button type="button" class="btn btn-danger" id="clear-ok">清除</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="stamp-core.js"></script>
+<script>
+(function(){
+  'use strict';
+  var C = window.StampCore;
+  var esc = C.esc;
+  var PX = 10;                         // 印面 1 單位 = 輸出 10 px
+  var OUT_W = C.W * PX, OUT_H = C.H * PX;
+  var STATUS_CLASS = {'待製作':'pending', '製作中':'making', '已出貨':'shipped'};
+  var STATUS_ICON = {
+    '待製作':'<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+    '製作中':'<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 1.8A4.2 4.2 0 0 1 6 10.2Z" fill="currentColor"/></svg>',
+    '已出貨':'<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.2 6.4l2.4 2.4 5.2-5.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var wide = window.matchMedia('(min-width:900px)');
+
+  function $(id){ return document.getElementById(id); }
+  function uid(o){ return o.sample ? 's:' + o.sampleKey : o.id; }
+  function tagHtml(status){
+    return '<span class="tag tag-'+STATUS_CLASS[status]+'">'+STATUS_ICON[status]+esc(status)+'</span>';
+  }
+
+  var orders = [], filter = 'all', selected = null, justUid = null, justTimer = null;
+
+  function reload(){
+    orders = C.allOrders(new Date());
+  }
+  function findByUid(u){ for (var i=0;i<orders.length;i++) if (uid(orders[i]) === u) return orders[i]; return null; }
+  function textSummary(o){
+    var t = o.items.filter(function(i){ return i.type === 'text'; }).map(function(i){ return i.text; });
+    return t.length ? t.join('、') : '（未輸入文字）';
+  }
+
+  /* ---------- 篩選 ---------- */
+  function renderFilters(){
+    var n = {all:orders.length};
+    C.STATUSES.forEach(function(s){ n[s] = orders.filter(function(o){ return o.status === s; }).length; });
+    $('count-all').textContent = n.all;
+    $('count-pending').textContent = n['待製作'];
+    $('count-making').textContent = n['製作中'];
+    $('count-shipped').textContent = n['已出貨'];
+    document.querySelectorAll('[data-filter]').forEach(function(b){
+      b.setAttribute('aria-pressed', b.getAttribute('data-filter') === filter ? 'true' : 'false');
+    });
+  }
+
+  /* ---------- 列表 ---------- */
+  function renderList(){
+    var list = orders.filter(function(o){ return filter === 'all' || o.status === filter; });
+    var html = '';
+    list.forEach(function(o){
+      var u = uid(o), cur = selected === u, just = justUid === u;
+      html += '<li><button type="button" class="order-row'+(just ? ' is-just' : '')+'" data-uid="'+esc(u)+'" aria-current="'+(cur ? 'true' : 'false')+'">'+
+        '<svg class="thumb" viewBox="-4 -4 388 148" aria-hidden="true">'+C.stampMarkup(o, false)+'</svg>'+
+        '<span class="row-main">'+
+          '<span class="row-top"><span class="row-id">'+esc(o.id)+'</span>'+tagHtml(o.status)+
+            (o.sample ? '<span class="chip">範例</span>' : '')+
+            (just ? '<span class="just">剛剛送出的訂單</span>' : '')+'</span>'+
+          '<span class="row-time">'+esc(C.formatTime(o.createdAt))+'</span>'+
+          '<span class="row-sum">'+esc(C.SHELLS[o.shell].name)+'外殼 · '+esc(C.INKS[o.ink].name)+'印油 · '+
+            esc(C.byId(C.BORDERS, o.border).name)+' · <b>'+esc(textSummary(o))+'</b></span>'+
+        '</span></button></li>';
+    });
+    $('order-list').innerHTML = html;
+    var empty = $('empty-msg');
+    empty.hidden = list.length > 0;
+    if (!list.length) empty.textContent = filter === 'all' ? '目前沒有任何訂單。' : '目前沒有「' + filter + '」的訂單，換個篩選條件看看。';
+  }
+
+  /* ---------- 明細 ---------- */
+  function specRows(o){
+    var shell = C.SHELLS[o.shell], ink = C.INKS[o.ink];
+    var texts = o.items.filter(function(i){ return i.type === 'text'; });
+    var icons = o.items.filter(function(i){ return i.type === 'icon'; });
+    var textHtml = texts.length ? '<ul>' + texts.map(function(t){
+      return '<li>「'+esc(t.text)+'」<span class="sub">'+esc(C.FONTS[t.font].name)+' · 字高 '+(t.size/10).toFixed(1)+' mm</span></li>';
+    }).join('') + '</ul>' : '（未輸入文字）';
+    var iconHtml = icons.length ? '<ul>' + icons.map(function(i){
+      return '<li>'+esc(C.byId(C.ICONS, i.icon).name)+'<span class="sub">約 '+(i.size/10).toFixed(1)+' mm</span></li>';
+    }).join('') + '</ul>' : '無';
+    return [
+      ['訂單編號', esc(o.id)],
+      ['送出時間', esc(C.formatTime(o.createdAt))],
+      ['外殼顏色', '<span class="sw" style="background:'+shell.base+'"></span>'+esc(shell.name)],
+      ['印油顏色', '<span class="sw" style="background:'+ink.color+'"></span>'+esc(ink.name)],
+      ['邊框', esc(C.byId(C.BORDERS, o.border).name)],
+      ['文字', textHtml],
+      ['小圖案', iconHtml],
+      ['印面尺寸', '38 × 14 mm']
+    ];
+  }
+  function renderDetail(){
+    var o = selected ? findByUid(selected) : null;
+    $('detail-empty').hidden = !!o;
+    $('detail-body').hidden = !o;
+    $('admin-grid').classList.toggle('show-detail', !!o && showDetailOnMobile);
+    if (!o) return;
+    $('detail-title').textContent = '訂單 ' + o.id;
+    $('detail-tag').innerHTML = tagHtml(o.status);
+    $('detail-sample').hidden = !o.sample;
+    $('detail-just').hidden = justUid !== uid(o);
+    $('detail-stamp').innerHTML = C.stampMarkup(o, false);
+    $('detail-stamp').setAttribute('aria-label', '客人看到的印面，' + C.INKS[o.ink].name + '印油');
+    $('detail-cap').textContent = '客人看到的樣子（' + C.INKS[o.ink].name + '印油）';
+    $('detail-spec').innerHTML = specRows(o).map(function(r){ return '<dt>'+r[0]+'</dt><dd>'+r[1]+'</dd>'; }).join('');
+    document.querySelectorAll('[data-status]').forEach(function(b){
+      b.setAttribute('aria-pressed', b.getAttribute('data-status') === o.status ? 'true' : 'false');
+    });
+  }
+  function renderAll(){ renderFilters(); renderList(); renderDetail(); }
+
+  var showDetailOnMobile = false;
+  function rowFor(u){
+    var rows = document.querySelectorAll('.order-row');
+    for (var i=0;i<rows.length;i++) if (rows[i].getAttribute('data-uid') === u) return rows[i];
+    return null;
+  }
+  function select(u, opts){
+    opts = opts || {};
+    if (selected !== u){ $('status-note').textContent = ''; $('dl-msg').textContent = ''; }
+    selected = u;
+    showDetailOnMobile = true;
+    renderAll();
+    if (!wide.matches){
+      window.scrollTo({top: Math.max(0, $('admin-grid').getBoundingClientRect().top + window.pageYOffset - 8), behavior:'auto'});
+      if (opts.focus) $('detail-title').focus({preventScroll:true});
+    } else if (opts.scroll){
+      var row = rowFor(u);
+      if (row) row.scrollIntoView({block:'center', behavior: reduceMotion ? 'auto' : 'smooth'});
+    }
+  }
+  function backToList(){
+    showDetailOnMobile = false;
+    renderDetail();
+    var row = selected ? rowFor(selected) : null;
+    if (row){ row.scrollIntoView({block:'center'}); row.focus({preventScroll:true}); }
+  }
+
+  /* ---------- 事件 ---------- */
+  $('filters').addEventListener('click', function(e){
+    var b = e.target.closest('[data-filter]');
+    if (!b) return;
+    filter = b.getAttribute('data-filter');
+    renderFilters(); renderList();
+  });
+  $('order-list').addEventListener('click', function(e){
+    var b = e.target.closest('.order-row');
+    if (b) select(b.getAttribute('data-uid'), {focus:true});
+  });
+  $('btn-back').addEventListener('click', backToList);
+  document.querySelectorAll('[data-status]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var o = selected ? findByUid(selected) : null;
+      var s = b.getAttribute('data-status');
+      if (!o || o.status === s) return;
+      C.setOrderStatus(o, s);
+      renderAll();
+      $('status-note').textContent = '已改為「' + s + '」，列表與篩選筆數已更新。';
+    });
+  });
+
+  /* ---------- 清除示範資料 ---------- */
+  var clearDlg = $('clear-dialog');
+  function openDialog(d){ if (typeof d.showModal === 'function') d.showModal(); else d.setAttribute('open', ''); }
+  function closeDialog(d){ if (typeof d.close === 'function') d.close(); else d.removeAttribute('open'); }
+  $('btn-clear').addEventListener('click', function(){ openDialog(clearDlg); });
+  $('clear-cancel').addEventListener('click', function(){ closeDialog(clearDlg); });
+  $('clear-ok').addEventListener('click', function(){
+    C.clearDemoData();
+    closeDialog(clearDlg);
+    reload();
+    filter = 'all'; selected = null; justUid = null; showDetailOnMobile = false;
+    renderAll();
+    $('page-note').textContent = '已清除示範資料，目前只剩範例訂單。';
+    $('btn-clear').focus();
+  });
+
+  /* ---------- 下載 ---------- */
+  function triggerDownload(blob, name){
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = name; a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+  }
+  function withTimeout(p, ms){
+    return Promise.race([p, new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, ms); })]);
+  }
+  /* 確保文字用的字體（700）已載入；回傳是否全部成功 */
+  function ensureFonts(o){
+    var byFont = {};
+    o.items.forEach(function(it){ if (it.type === 'text') byFont[it.font] = (byFont[it.font] || '') + it.text; });
+    var keys = Object.keys(byFont);
+    if (!keys.length) return Promise.resolve(true);
+    if (!document.fonts || !document.fonts.load) return Promise.resolve(false);
+    return Promise.all(keys.map(function(k){
+      var spec = C.FONTS[k].css;
+      return withTimeout(document.fonts.load(spec, byFont[k]), 10000).then(function(faces){
+        return faces.length > 0 && document.fonts.check(spec, byFont[k]);
+      }, function(){ return false; });
+    })).then(function(r){ return r.every(Boolean); });
+  }
+  function loadSvgImage(svg){
+    return new Promise(function(resolve, reject){
+      var url = URL.createObjectURL(new Blob([svg], {type:'image/svg+xml'}));
+      var img = new Image();
+      img.onload = function(){ URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error('svg image')); };
+      img.src = url;
+    });
+  }
+  function renderPng(o){
+    var canvas = document.createElement('canvas');
+    canvas.width = OUT_W; canvas.height = OUT_H;
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, OUT_W, OUT_H);
+    /* 繪製順序與預覽相同：邊框在下，items 依陣列順序 */
+    var layers = [{svg:C.monoLayerSvg(C.borderMarkup(o.border, C.MONO_INK), OUT_W, OUT_H)}];
+    o.items.forEach(function(it){
+      if (it.type === 'text') layers.push({text:it});
+      else layers.push({svg:C.monoLayerSvg(C.itemMarkup(it, C.MONO_INK, false), OUT_W, OUT_H)});
+    });
+    return Promise.all(layers.map(function(l){ return l.svg ? loadSvgImage(l.svg) : null; })).then(function(imgs){
+      layers.forEach(function(l, i){
+        if (l.svg){ ctx.drawImage(imgs[i], 0, 0, OUT_W, OUT_H); return; }
+        var t = l.text;
+        ctx.save();
+        ctx.fillStyle = '#000000';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '700 ' + (t.size * PX) + 'px ' + C.FONTS[t.font].family;
+        /* SVG 的 dominant-baseline="central" 是以字體 ascent／descent 的中點對齊，
+           canvas 的 middle 是 em 方框中線；依字體量測值補上差距，讓位置與預覽一致 */
+        var m = ctx.measureText(t.text), dy = 0;
+        if (typeof m.fontBoundingBoxAscent === 'number' && typeof m.fontBoundingBoxDescent === 'number'){
+          dy = (m.fontBoundingBoxAscent - m.fontBoundingBoxDescent) / 2;
+        }
+        ctx.fillText(t.text, t.x * PX, t.y * PX + dy);
+        ctx.restore();
+      });
+      /* 轉成純黑白（去除反鋸齒灰階） */
+      var data = ctx.getImageData(0, 0, OUT_W, OUT_H), d = data.data;
+      for (var p = 0; p < d.length; p += 4){
+        var lum = 0.299*d[p] + 0.587*d[p+1] + 0.114*d[p+2];
+        var v = (d[p+3] > 0 && lum < 128) ? 0 : 255;
+        d[p] = d[p+1] = d[p+2] = v; d[p+3] = 255;
+      }
+      ctx.putImageData(data, 0, 0);
+      return new Promise(function(resolve, reject){
+        canvas.toBlob(function(b){ b ? resolve(b) : reject(new Error('toBlob')); }, 'image/png');
+      });
+    });
+  }
+  var busy = false;
+  $('dl-png').addEventListener('click', function(){
+    var o = selected ? findByUid(selected) : null;
+    if (!o || busy) return;
+    busy = true;
+    var btn = $('dl-png'), label = $('dl-png-label');
+    btn.disabled = true; label.textContent = '圖檔產生中…';
+    $('dl-msg').textContent = '';
+    ensureFonts(o).then(function(ok){
+      if (!ok) $('dl-msg').textContent = '字體尚未載入完成，輸出的字形可能與預覽不同。';
+      return renderPng(o);
+    }).then(function(blob){
+      triggerDownload(blob, o.id + '-印面.png');
+    }).catch(function(){
+      $('dl-msg').textContent = '圖檔產生失敗，請重新整理頁面後再試一次。';
+    }).then(function(){
+      busy = false; btn.disabled = false; label.textContent = '下載製作用圖檔（PNG）';
+    });
+  });
+  $('dl-svg').addEventListener('click', function(){
+    var o = selected ? findByUid(selected) : null;
+    if (!o) return;
+    triggerDownload(new Blob([C.monoSvgDocument(o)], {type:'image/svg+xml;charset=utf-8'}), o.id + '-印面.svg');
+  });
+
+  /* ---------- 網址帶訂單編號 ---------- */
+  function applyHash(){
+    var id = '';
+    try { id = decodeURIComponent(location.hash.replace(/^#/, '')); } catch(e){}
+    if (!/^CS-\d{8}-\d{3,}$/.test(id)) return;
+    var o = null;
+    for (var i=0;i<orders.length;i++) if (!orders[i].sample && orders[i].id === id){ o = orders[i]; break; }
+    if (!o) return;
+    var u = uid(o);
+    if (o.status !== filter && filter !== 'all') filter = 'all';
+    justUid = u;
+    clearTimeout(justTimer);
+    justTimer = setTimeout(function(){
+      justUid = null;
+      var row = rowFor(u); if (row){ row.classList.remove('is-just'); var j = row.querySelector('.just'); if (j) j.remove(); }
+      $('detail-just').hidden = true;
+    }, 8000);
+    select(u, {scroll:true});
+  }
+  window.addEventListener('hashchange', applyHash);
+
+  /* 其他分頁（例如設計器）送出新訂單時同步 */
+  window.addEventListener('storage', function(e){
+    if (e.key !== null && e.key !== C.ORDERS_KEY && e.key !== C.SAMPLE_STATUS_KEY) return;
+    reload();
+    if (selected && !findByUid(selected)){ selected = null; showDetailOnMobile = false; }
+    renderAll();
+  });
+  wide.addEventListener && wide.addEventListener('change', renderDetail);
+
+  /* ---------- 啟動 ---------- */
+  reload();
+  renderAll();
+  applyHash();
+})();
+</script>
+</body>
+</html>
