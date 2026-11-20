@@ -122,7 +122,7 @@
   <ol class="flow" aria-label="接收端流程">
     <li><b>1</b>客人在設計器送出</li>
     <li><b>2</b>店家在這裡看到訂單與規格</li>
-    <li><b>3</b>下載黑白圖檔去製作</li>
+    <li><b>3</b>下載印面圖檔去製作</li>
     <li><b>4</b>更新狀態</li>
   </ol>
 
@@ -188,7 +188,7 @@
               </button>
             </div>
             <ul class="notes">
-              <li>製作用圖檔一律輸出黑白，印油顏色請看規格表。</li>
+              <li>圖檔顏色與訂單的印油顏色相同。</li>
               <li>PNG 為 3800 × 1400 px（38 × 14 mm，每公釐 100 px）。</li>
               <li>向量檔的文字需要電腦安裝對應字體才會正確顯示。</li>
             </ul>
@@ -427,24 +427,28 @@
       img.src = url;
     });
   }
+  /* 先以黑色在白底上畫出遮罩，最後再依覆蓋程度換成印油色或白色 */
+  var MASK_INK = '#000000';
   function renderPng(o){
+    var inkHex = C.INKS[o.ink].color;
+    var inkRGB = [parseInt(inkHex.substr(1,2),16), parseInt(inkHex.substr(3,2),16), parseInt(inkHex.substr(5,2),16)];
     var canvas = document.createElement('canvas');
     canvas.width = OUT_W; canvas.height = OUT_H;
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, OUT_W, OUT_H);
     /* 繪製順序與預覽相同：邊框在下，items 依陣列順序 */
-    var layers = [{svg:C.monoLayerSvg(C.borderMarkup(o.border, C.MONO_INK), OUT_W, OUT_H)}];
+    var layers = [{svg:C.layerSvg(C.borderMarkup(o.border, MASK_INK), OUT_W, OUT_H)}];
     o.items.forEach(function(it){
       if (it.type === 'text') layers.push({text:it});
-      else layers.push({svg:C.monoLayerSvg(C.itemMarkup(it, C.MONO_INK, false), OUT_W, OUT_H)});
+      else layers.push({svg:C.layerSvg(C.itemMarkup(it, MASK_INK, false), OUT_W, OUT_H)});
     });
     return Promise.all(layers.map(function(l){ return l.svg ? loadSvgImage(l.svg) : null; })).then(function(imgs){
       layers.forEach(function(l, i){
         if (l.svg){ ctx.drawImage(imgs[i], 0, 0, OUT_W, OUT_H); return; }
         var t = l.text;
         ctx.save();
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = MASK_INK;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.font = '700 ' + (t.size * PX) + 'px ' + C.FONTS[t.font].family;
@@ -457,12 +461,12 @@
         ctx.fillText(t.text, t.x * PX, t.y * PX + dy);
         ctx.restore();
       });
-      /* 轉成純黑白（去除反鋸齒灰階） */
+      /* 轉成「印油色／白色」兩色（去除反鋸齒灰階）：遮罩為黑字白底，亮度低於一半即為印油 */
       var data = ctx.getImageData(0, 0, OUT_W, OUT_H), d = data.data;
       for (var p = 0; p < d.length; p += 4){
         var lum = 0.299*d[p] + 0.587*d[p+1] + 0.114*d[p+2];
-        var v = (d[p+3] > 0 && lum < 128) ? 0 : 255;
-        d[p] = d[p+1] = d[p+2] = v; d[p+3] = 255;
+        var isInk = d[p+3] > 0 && lum < 128;
+        d[p] = isInk ? inkRGB[0] : 255; d[p+1] = isInk ? inkRGB[1] : 255; d[p+2] = isInk ? inkRGB[2] : 255; d[p+3] = 255;
       }
       ctx.putImageData(data, 0, 0);
       return new Promise(function(resolve, reject){
@@ -492,7 +496,7 @@
   $('dl-svg').addEventListener('click', function(){
     var o = selected ? findByUid(selected) : null;
     if (!o) return;
-    triggerDownload(new Blob([C.monoSvgDocument(o)], {type:'image/svg+xml;charset=utf-8'}), o.id + '-印面.svg');
+    triggerDownload(new Blob([C.exportSvgDocument(o)], {type:'image/svg+xml;charset=utf-8'}), o.id + '-印面.svg');
   });
 
   /* ---------- 網址帶訂單編號 ---------- */

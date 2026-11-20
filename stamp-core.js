@@ -4,7 +4,6 @@
   'use strict';
   var W = 380, H = 140;
   var PAPER = '#ffffff';
-  var MONO_INK = '#000000';
 
   var SHELLS = {
     pink:   {name:'粉紅',   base:'#f4a9be', dark:'#d97b98', light:'#fde4eb'},
@@ -161,24 +160,25 @@
     design.items.forEach(function(it){ s += itemMarkup(it, ink, interactive); });
     return s;
   }
-  /* 製作用黑白向量檔（完整 SVG 文件） */
-  function monoSvgDocument(design){
+  /* 製作用向量檔（完整 SVG 文件），顏色為訂單的印油顏色，底色為白色 */
+  function exportSvgDocument(design){
+    var ink = INKS[design.ink].color;
     var s = '<?xml version="1.0" encoding="UTF-8"?>\n'+
       '<svg xmlns="http://www.w3.org/2000/svg" width="38mm" height="14mm" viewBox="0 0 '+W+' '+H+'">\n'+
       '<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="'+PAPER+'"/>\n'+
-      borderMarkup(design.border, MONO_INK)+'\n';
+      borderMarkup(design.border, ink)+'\n';
     design.items.forEach(function(it){
       if (it.type === 'text'){
-        s += '<text x="'+f1(it.x)+'" y="'+f1(it.y)+'" font-size="'+f1(it.size)+'" text-anchor="middle" dominant-baseline="central" fill="'+MONO_INK+
+        s += '<text x="'+f1(it.x)+'" y="'+f1(it.y)+'" font-size="'+f1(it.size)+'" text-anchor="middle" dominant-baseline="central" fill="'+ink+
              '" font-weight="700" font-family="'+esc(FONTS[it.font].family)+'">'+esc(it.text)+'</text>\n';
       } else {
-        s += itemMarkup(it, MONO_INK, false)+'\n';
+        s += itemMarkup(it, ink, false)+'\n';
       }
     });
     return s + '</svg>\n';
   }
-  /* 只含單一層（邊框或單一圖案）的黑白 SVG，供 canvas 繪製用（不含文字） */
-  function monoLayerSvg(layerMarkup, pxW, pxH){
+  /* 只含單一層（邊框或單一圖案）的 SVG，供 canvas 繪製用（不含文字） */
+  function layerSvg(layerMarkup, pxW, pxH){
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'+pxW+'" height="'+pxH+'" viewBox="0 0 '+W+' '+H+'">'+layerMarkup+'</svg>';
   }
 
@@ -330,12 +330,12 @@
   function clearDemoData(){ removeKey(ORDERS_KEY); removeKey(SAMPLE_STATUS_KEY); }
 
   global.StampCore = {
-    W:W, H:H, PAPER:PAPER, MONO_INK:MONO_INK,
+    W:W, H:H, PAPER:PAPER,
     SHELLS:SHELLS, INKS:INKS, FONTS:FONTS, BORDERS:BORDERS, ICONS:ICONS, STATUSES:STATUSES,
     ORDERS_KEY:ORDERS_KEY, SAMPLE_STATUS_KEY:SAMPLE_STATUS_KEY,
     starPts:starPts, byId:byId, esc:esc, f1:f1,
     itemMarkup:itemMarkup, borderMarkup:borderMarkup, stampMarkup:stampMarkup,
-    monoSvgDocument:monoSvgDocument, monoLayerSvg:monoLayerSvg,
+    exportSvgDocument:exportSvgDocument, layerSvg:layerSvg,
     loadOrders:loadOrders, allOrders:allOrders, createOrder:createOrder, nextOrderId:nextOrderId,
     setOrderStatus:setOrderStatus, clearDemoData:clearDemoData, formatTime:formatTime
   };
